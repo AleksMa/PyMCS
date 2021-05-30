@@ -64,9 +64,6 @@ matureRate = float(sys.argv[3])
 seconds = float(sys.argv[4])
 likelihood = float(sys.argv[5])
 
-# print(G1s)
-# print(G2s)
-
 common = 0.0
 size1 = 0.0
 size2 = 0.0
@@ -103,22 +100,20 @@ for G1d in G1s:
                 continue
             tau += 2 * m[i] * math.log(m[i]/(len2*omega[i]))
 
-        # print(omega, m)
-        # print(G1d['n'], G2d['n'], tau, stats.chi2.ppf(q=0.005, df=count))
-
-        # print(I, J, tau, stats.chi2.ppf(q=1-likelihood, df=count))
-
         if math.fabs(tau) > stats.chi2.ppf(q=1-likelihood, df=count):
             continue
 
         mature = matureRate * (G1.number_of_nodes() + G2.number_of_nodes()) / 2
+
         communs = maximum_common_induced_subgraph(G1,G2,int(mature),False,True,seconds)
+
         if len(communs) > 0:
-            plag = 2 * float(communs[0][0].number_of_nodes()) / (len1 + len2)
+            plag = 2 * float(communs[2]) / (len1 + len2)
             if plag > maxPlag:
                 maxPlag = plag
                 maxJ = J
-                maxCommun = communs[0][1]
+                maxCommun = communs[1]
+
     common += maxPlag * (len1 + len(G2s[maxJ]['g'].nodes()))
     print(I, maxJ, maxPlag, "{"+(",".join("{}:{}".format(k, v) for k, v in maxCommun.items()))+"}")
 print(common / (size1 + size2))

@@ -36,11 +36,13 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
                                     seconds=30.0):
 
     start = time.time()
+    reverse = False
 
     if (len(G1.nodes()) > len(G2.nodes())):
         tempG = G1
         G1 = G2
         G2 = tempG
+        reverse = True
 
     nodesG1 = len(G1.nodes)
 
@@ -90,14 +92,16 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, use_max_clique=
         if tup[2] > highest:
             highest = tup[2]
 
-    newcommons = []
     for tup in commons:
         if tup[2] == highest:
-            newcommons.append(tup)
+            if reverse:
+                map_reverse = {v: k for k, v in tup[1].items()}
+                return tup[0], map_reverse, tup[2]
+            return tup
 
         # print("Done!")
         # print("Found "+str(len(newcommons))+" maximum common induced subgraphs.")
         # print("Maximum Number of nodes : "+str(highest))
     end = time.time()
     # print("Time elapsed :"+str(end - start))
-    return newcommons
+    return ()
