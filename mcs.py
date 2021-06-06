@@ -42,7 +42,7 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, seconds=30.0):
     break_flag = False
 
     for combination_size in [G1.number_of_nodes(), min_number_vertex] + list(
-            range(min_number_vertex, G1.number_of_nodes())):
+            range(G1.number_of_nodes(), min_number_vertex, -1)):
         if break_flag:
             break
         combinations = gen_combinations(G1.nodes, combination_size)
