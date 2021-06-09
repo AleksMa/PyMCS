@@ -25,6 +25,8 @@ common = 0.0
 size1 = 0.0
 size2 = 0.0
 
+now = time.time()
+
 # Собственно определение максимальных общих подграфов
 for G1d in G1_subgraphs:
     I = G1d['n']
@@ -51,18 +53,20 @@ for G1d in G1_subgraphs:
 
         mature = mature_rate * min(G1.number_of_nodes(), G2.number_of_nodes())
 
-        commons = maximum_common_induced_subgraph(G1, G2, int(mature), seconds)
+        commons = maximum_common_induced_subgraph(G1, G2, int(mature), seconds / 2)
 
         if len(commons) > 0:
-            plag = 2 * float(commons[2]) / (len1 + len2)
+            plag = float(commons[2]) / len1
             if plag > max_plag:
                 max_plag = plag
                 max_j = J
                 max_common = commons[1]
 
-    common += max_plag * (len1 + len(G2_subgraphs[max_j]['g'].nodes()))
+    common += max_plag * len1
 
     # Заимствования по наиболее близким функциям и изоморфизм
     print(I, max_j, max_plag, "{" + (",".join("{}:{}".format(k, v) for k, v in max_common.items())) + "}")
 
-print(common / (size1 + size2))  # Общая доля заимствований
+print(common / size1)  # Общая доля заимствований
+
+# print(int(time.time() - now))

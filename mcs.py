@@ -42,8 +42,8 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, seconds=30.0):
     break_flag = False
 
     for combination_size in [G1.number_of_nodes(), min_number_vertex] + list(
-            range(G1.number_of_nodes(), min_number_vertex, -1)):
-        if break_flag:
+            range(min_number_vertex, G1.number_of_nodes())):
+        if break_flag or time.time() - now > seconds:
             break
         combinations = gen_combinations(G1.nodes, combination_size)
 
@@ -61,9 +61,12 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, seconds=30.0):
                 break_flag = True
                 break
 
+        if break_flag:
+            break
+
         for sub1 in subgraphs1:
             vf2 = Vf()
-            res = vf2.main(G2, sub1)
+            res = vf2.main(G2, sub1, time.time(), seconds / 10)
             if res != {}:
                 commons.append((sub1, res, sub1.number_of_nodes()))
                 if i > 1:  # Гарантированно нашли наибольший общий подграф
@@ -74,6 +77,8 @@ def maximum_common_induced_subgraph(G1, G2, min_number_vertex=3, seconds=30.0):
                 break
             if i == 0 and len(commons) > 0:  # Гарантированно нашли наибольший общий подграф
                 break_flag = True
+                break
+            if i == 1 and len(commons) > 0:
                 break
         if i == 1 and len(commons) == 0:  # Не нашли общий подграф минимального размера, значит и больших подграфов нет
             break
